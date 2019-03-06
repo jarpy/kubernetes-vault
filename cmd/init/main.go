@@ -137,11 +137,16 @@ func main() {
 
 	result := make(chan common.WrappedSecretId)
 
+	logger.Debug("Starting HTTP server goroutine...")
 	go startHTTPServer(certificate, logger, result)
+	logger.Debug("Started HTTP server goroutine.")
 
 	for {
+		logger.Debug("Reading channel...")
 		select {
 		case wrappedSecretId := <-result:
+			logger.Debug("Read channel.")
+			logger.Debug("wrappedSecretId -> %s", wrappedSecretId)
 
 			if err := wrappedSecretId.Validate(); err != nil {
 				logger.Fatalf("could not validate wrapped secret_id: %s", err)
@@ -154,12 +159,14 @@ func main() {
 			)
 
 			if unwrapSecret {
+				logger.Debug("UnwrapSecret")
 				client, err := getAPIClient(wrappedSecretId.VaultAddr, wrappedSecretId.VaultCAs)
 
 				if err != nil {
 					logger.Fatalf("Error creating vault client: %s", err)
 				}
 
+				logger.Debug("calling unwrapSecretId")
 				sID, secretIDAccessor, err := unwrapSecretID(client, wrappedSecretId.SecretID)
 
 				if err != nil {
@@ -167,6 +174,7 @@ func main() {
 				}
 
 				if retrieveToken {
+					logger.Debug("calling login")
 					authToken, err := login(client, roleID, sID)
 
 					if err != nil {
@@ -195,6 +203,7 @@ func main() {
 				}
 			}
 
+			logger.Debug("calling json.Marshal")
 			b, err := json.Marshal(response)
 
 			if err != nil {
@@ -211,6 +220,7 @@ func main() {
 				tokenPath = filepath.Join(credentialsPath, "vault-wrapped-secret-id")
 			}
 
+			logger.Debug("calling ioutil.WriteFile")
 			err = ioutil.WriteFile(tokenPath, b, 0444)
 
 			if err != nil {

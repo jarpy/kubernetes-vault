@@ -26,7 +26,7 @@ require (
 	github.com/docker/go-units v0.3.3 // indirect
 	github.com/duosecurity/duo_api_golang v0.0.0-20180315112207-d0530c80e49a // indirect
 	github.com/ericchiang/k8s v0.4.0
-	github.com/fatih/structs v1.0.0 // indirect
+	github.com/fatih/structs v1.1.0 // indirect
 	github.com/go-sql-driver/mysql v1.4.0 // indirect
 	github.com/gocql/gocql v0.0.0-20180929150753-7ce14ecfedc6 // indirect
 	github.com/golang/dep v0.5.0 // indirect
